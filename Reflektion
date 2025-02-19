@@ -1,0 +1,16 @@
+Reflekter over hukommelsen
+
+Tænk over, hvordan hukommelsen allokeres i din stack. Hvorfor bruger vi Vec<T> til dynamisk allokering?
+Vi bruger Vec<T> fordi:
+
+Den giver mulighed for dynamisk allokering – vi kan tilføje eller fjerne elementer efter behov.
+Metadata (pegepind til data, længde og kapacitet) for Vec<T> ligger på stacken, men selve dataene opbevares i en heap-allokeret buffer.
+I modsætning hertil allokeres arrays med fast størrelse hele på stacken, hvilket ikke giver samme fleksibilitet.
+Hvordan håndterer Rust hukommelsen for denne struktur sammenlignet med en heap-allokeret datastruktur? Overvej, hvad der sker med elementerne, når stacken popper elementer af.
+
+Når vi kalder push på en Vec<T>, og der ikke er nok kapacitet, allokerer Rust en ny, større buffer på heapen, kopierer de eksisterende elementer over og frigiver den gamle buffer.
+Ved et pop fjernes det sidste element logisk ved at reducere vektorens længde, men den allokerede buffer på heapen forbliver intakt. Den frigives først, når:
+Vektoren eksplicit skrumper eller vektoren går ud af scope og dermed destrueres, hvor hele den heap-allokerede hukommelse bliver frigivet.
+
+Reflektér over, hvordan ydeevnen af jeres stack ville være i forhold til en heap-allokeret datastruktur.
+Vores stack med en enkelt heap-allokeret vektor giver bedre cache-effektivitet og hurtigere adgang end datastrukturer med spredt allocation.
